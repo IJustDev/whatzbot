@@ -1,8 +1,8 @@
 <div align="center">
 
-# WhatsBot
+# WhatzBot
 
-## The best WhatzApp Bot framework out there
+## The best WhatsApp Bot framework out there
 
 Create a WhatsApp bot **without any browser simulation**. Use it like an cli
 with a clean code architecture.
