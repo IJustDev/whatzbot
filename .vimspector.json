@@ -1,0 +1,15 @@
+{
+  "configurations": {
+    "run": {
+      "adapter": "vscode-node",
+      "configuration": {
+        "request": "launch",
+        "protocol": "auto",
+        "stopOnEntry": true,
+        "console": "externalTerminal",
+        "program": "${workspaceRoot}/dist/example.js",
+        "cwd": "${workspaceRoot}"
+      }
+    }
+  }
+}

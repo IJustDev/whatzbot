@@ -9,48 +9,62 @@ with a clean code architecture.
 
 </div>
 
-## Usage
+## Run the example (Send messages from terminal)
+There is an example that allows you to query your contact informations and to send
+a message to one of your contacts.
+It's located in src/example.ts.
+
+![Showcase](./resources/showcase.gif)
+
+To run it simply do following:
+
+```sh
+$ npm install
+$ npm run example:start
+```
+
+After that a QR-Code will pop up on your terminal which needs to be scanned by
+your WhatsApp application. Like you would do with **WhatsApp Web**.
+
+### Script to send the message
+A fzf thingy message sender written in bash. Its located in `tools/wa.sh`.
+
+**Usage**
+1. Start the example with `npm run example:start`
+2. Scan the qr code and wait until the log shows `X contacts found...`
+3. Run `sh tools/wa.sh` and you should see a list of contacts popping up **YOU NEED fzf AND jq INSTALLED**
+4. Search for a contact and hit enter
+5. Enter your message and hit enter, it will be sent to the client
+
+## Write your own bot
 
 ```sh
 $ npm install whatzbot
 ```
 
 ```typescript
-import {createBot, IMessage, ISender, IBot} from 'whatsbot';
+import { Bot, createConnection, IMessage } from 'whatzbot';
 
-const bot = createBot({logLevel: "info", pinnedChatsFirst: false, sessionFile: './auth_info.json'});
+export class EchoBot extends Bot {
 
-// bot.messages returns the initial messages and initial chats
-const messages = bot.messages;
+	onMessageReceived(msg: IMessage) {
+		if (msg.sender !== 'me')
+			this.sendMessage(msg.message, msg.sender);
+	}
+}
 
-// Bare metal message handling
-bot.subscribe("message-received", (message: IMessage, sender: ISender) => {
-    // Triggered when a new message was received.
-});
-
-bot.subscribe("presence-updated", (sender: ISender) => {
-    // When the recipient turns online, offline, or started typing.
-});
-
-// If you plan to create commands use a command handler
-// availableForMe will handle sent messages as commands aswell. Default: false
-const diceGameCommandHandler = createCommandHandler('!dice', {availableForMe: true});
-diceGameCommandHandler.addSubCommand({
-    subCommand: 'roll',
-    paramsRequired: 0,
-    handle: (params: string[], bot: IBot): string => {
-	// returned string will be sent to the sender
-	// return null if you don't want to send anything
-	return params[0];
-    },
-});
-
-// make the bot use the diceGameCommandHandler
-bot.registerCommandHandler(diceGameCommandHandler);
-
-// When I start the bot now I'll be able to receive a message
-
+async function start() {
+	const connection = await createConnection({
+		logLevel: 'info',
+		pinnedChatsFirst: true,
+		sessionFile: './auth_info.json'
+	});
+	const mBot = new EchoBot(connection);
+	mBot.listen();
+}
+start();
 ```
+
 
 <div align="center">
 
